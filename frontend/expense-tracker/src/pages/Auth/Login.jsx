@@ -1,8 +1,59 @@
-import React from 'react'
+import React, { useState } from 'react'
+import AuthLayout from '../../components/layouts/AuthLayout'
+import Input from '../../components/inputs/Input'
+import { Link, useNavigate } from 'react-router-dom'
+import { validateEmail } from '../../utils/helper'
 
 const Login = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(null)
+
+  const navigate = useNavigate();
+
+  // Login logic here
+  const loginHabdler = (e) => {
+    e.preventDefault()
+
+    if(!validateEmail(email)) {
+      setError("Please enter a valid email address.")
+      return
+    }
+    if(!password || password.length < 8) {
+      setError("Please enter a correct password.")
+      return
+    }
+
+    setError(null);
+
+    // Login api call here
+
+    // Simulate successful login
+    navigate('/dashboard');
+  }
+
   return (
-    <div>Login</div>
+    <AuthLayout>
+      <div className='lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center'>
+        <h3 className='text-xl font-semibold text-black'>Welcome Back</h3>
+        <p className='text-xs text-slate-700 mt-[5px] mb-6'>Login to your account</p>
+
+        <form action="" onSubmit={loginHabdler}>
+          <Input value={email} type="text" onChange={(e)=> setEmail(e.target.value)} label="Email Address" placeholder='sample@test.com' />
+          <Input value={password} type="password" onChange={(e)=> setPassword(e.target.value)} label="Password" placeholder='Min 8 Characters' />
+
+          {error && (
+            <p className='text-red-500 text-xs pb-2.5'>{error}</p>
+          )}
+
+          <button type='submit' className='btn-primary'>Login</button>
+
+          <p className='text-[13px] text-slate-800 mt-3'>Don't have an account?{" "} 
+            <Link to="/signup" className='text-primary font-medium underline'>Register</Link>
+          </p>
+        </form>
+      </div>
+    </AuthLayout>
   )
 }
 
