@@ -11,22 +11,22 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  // Login logic here
   const loginHabdler = (e) => {
     e.preventDefault()
 
-    // login logic here
     if(!validateEmail(email)) {
       setError("Please enter a valid email address.")
       return
     }
     if(!password || password.length < 8) {
-      setError("Please enter a password must be at least 8 characters long.")
+      setError("Please enter a correct password.")
       return
     }
 
     setError(null);
 
-    // LOGIN api call here
+    // Login api call here
 
     // Simulate successful login
     navigate('/dashboard');
