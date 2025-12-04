@@ -2,9 +2,13 @@ require('dotenv').config();
 const cors = require('cors');
 const express = require('express');
 const app = express();
+
 const connectDB = require('./config/db');
+
 const authRoutes = require('./routes/authRoutes');
 const incomeRoutes = require('./routes/incomeRoutes');
+const expenseRoutes = require('./routes/expenseRoutes');
+
 const path = require('path');
 
 // middleware to handle CORS and JSON parsing
@@ -27,6 +31,7 @@ connectDB();
 // Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/income', incomeRoutes);
+app.use('/api/v1/expense', expenseRoutes);
 
 
 const port = process.env.PORT || 3000;
