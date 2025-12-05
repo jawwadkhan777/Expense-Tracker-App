@@ -3,6 +3,8 @@ import AuthLayout from '../../components/layouts/AuthLayout'
 import Input from '../../components/inputs/Input'
 import { Link, useNavigate } from 'react-router-dom'
 import { validateEmail } from '../../utils/helper'
+import { API_PATHS } from '../../utils/apiPaths'
+import axiosInstance from '../../utils/axiosInstance'
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -12,8 +14,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   // Login logic here
-  const loginHabdler = (e) => {
-    e.preventDefault()
+  const loginHandler = async (e) => {
+    e.preventDefault();
 
     if(!validateEmail(email)) {
       setError("Please enter a valid email address.")
@@ -27,10 +29,26 @@ const Login = () => {
     setError(null);
 
     // Login api call here
+    try {
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password
+      });
 
+      const { token } = response.data;
+      if (token) {
+      localStorage.setItem('token', token);
+      navigate('/dashboard');
+    }
     // Simulate successful login
-    navigate('/dashboard');
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      setError(error.response.data.message);
+    } else {
+      setError("An unexpected error occurred. Please try again later.");
+    }
   }
+}
 
   return (
     <AuthLayout>
@@ -38,7 +56,7 @@ const Login = () => {
         <h3 className='text-xl font-semibold text-black'>Welcome Back</h3>
         <p className='text-xs text-slate-700 mt-[5px] mb-6'>Login to your account</p>
 
-        <form action="" onSubmit={loginHabdler}>
+        <form action="" onSubmit={loginHandler}>
           <Input value={email} type="text" onChange={(e)=> setEmail(e.target.value)} label="Email Address" placeholder='sample@test.com' />
           <Input value={password} type="password" onChange={(e)=> setPassword(e.target.value)} label="Password" placeholder='Min 8 Characters' />
 

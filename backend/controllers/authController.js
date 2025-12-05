@@ -36,7 +36,7 @@ exports.registerUser = async (req, res) => {
 
 // Controller function to login user
 exports.loginUser = async(req, res) => {
-    const {email, password} = req.body || {};
+    const {email, password} = req.body;
 
     if(!email || !password) {
         return res.status(400).json({message: "Please provide email and password"});
@@ -44,8 +44,15 @@ exports.loginUser = async(req, res) => {
 
     try {
         // Find user by email
-        const user = await User.findOne({email});
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
+        // password verification 
         const passwordMatch = await user.matchPassword(password);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Invalid email or password" });
+        }
 
         if(!user || !passwordMatch) {
             return res.status(401).json({message: "Invalid email or password"});
