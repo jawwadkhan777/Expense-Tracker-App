@@ -14,7 +14,7 @@ const axiosInstance = axios.create({
 // Add an interceptor to handle responses globally
 axiosInstance.interceptors.request.use(
     (config) => {
-        const accessToken = localStorage.getItem('accessToken'); // Retrieve access token from local storage
+        const accessToken = localStorage.getItem('token'); // Retrieve access token from local storage
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`; // Attach the access token to the request headers
         }
