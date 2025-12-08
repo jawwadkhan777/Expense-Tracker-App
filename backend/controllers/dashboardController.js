@@ -57,15 +57,31 @@ exports.getDashboardData = async (req, res) => {
       0
     );
 
-    // Get recent 5 transactions (income + expense)
+    // Get recent 5 income transactions
     const recentIncome = await Income.find({ userId: userObjectId })
       .sort({ date: -1 })
-      .limit(5);
+      .limit(5)
+      .lean(); // converts Mongoose docs to plain JS objects
+    // Add type field to income
+    const incomeWithType = recentIncome.map((item) => ({
+      ...item,
+      type: "income",
+    }));
+
+    // Get recent 5 expense transactions
     const recentExpense = await Expense.find({ userId: userObjectId })
       .sort({ date: -1 })
-      .limit(5);
-    const recentTransactions = [...recentIncome, ...recentExpense]
-      .sort((a, b) => b.date - a.date) // sort by date descending
+      .limit(5)
+      .lean(); // required for spreading
+    // Add type field to expense
+    const expenseWithType = recentExpense.map((item) => ({
+      ...item,
+      type: "expense",
+    }));
+
+    // Merge + sort + limit to 5
+    const recentTransactions = [...incomeWithType, ...expenseWithType]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, 5);
 
     res.status(200).json({
