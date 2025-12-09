@@ -9,6 +9,7 @@ import { LuHandCoins, LuWalletMinimal } from 'react-icons/lu';
 import { addThousandsSeperator } from '../../utils/helper';
 import { useNavigate } from 'react-router-dom';
 import RecentTransactions from '../../components/dashBoard/RecentTransactions';
+import FinalOverview from '../../components/dashBoard/FinalOverview';
 
 const Home = () => {
   useUserAuth();
@@ -71,6 +72,8 @@ const Home = () => {
           transactions={dashboardData?.recentTransactions}
           onSeeMore= {()=> navigate('/expense')}
           />
+
+          <FinalOverview totalBalance={dashboardData?.totalBalance || 0} totalIncome={dashboardData?.totalIncome || 0} totalExpense={dashboardData?.totalExpense || 0} />
         </div>
       </div>
     </DashBoardLayout>
